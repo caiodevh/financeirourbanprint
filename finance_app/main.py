@@ -13,13 +13,13 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from database.database_manager import DatabaseManager
-from services.finance_calculator import FinanceCalculator
-from services.report_generator import ReportGenerator
-from ui.dashboard import DashboardPage
-from ui.expenses_page import ExpensesPage
-from ui.reports_page import ReportsPage
-from ui.sales_page import SalesPage
+from finance_app.database.database_manager import DatabaseManager
+from finance_app.services.finance_calculator import FinanceCalculator
+from finance_app.services.report_generator import ReportGenerator
+from finance_app.ui.dashboard import DashboardPage
+from finance_app.ui.expenses_page import ExpensesPage
+from finance_app.ui.reports_page import ReportsPage
+from finance_app.ui.sales_page import SalesPage
 
 
 class FinanceApp(QMainWindow):
