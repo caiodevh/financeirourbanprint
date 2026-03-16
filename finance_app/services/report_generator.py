@@ -50,8 +50,8 @@ class ReportGenerator:
         receita = float(sales_df["valor_total"].sum()) if not sales_df.empty else 0.0
         gastos = float(exp_df["valor"].sum()) if not exp_df.empty else 0.0
         custos_op = float(op_df["valor"].sum()) if not op_df.empty else 0.0
-        custo_prod = float(sales_df["custo_producao"].sum()) if not sales_df.empty else 0.0
-        lucro_liquido = receita - gastos - custos_op - custo_prod
+        lucro_bruto = receita
+        lucro_liquido = lucro_bruto - gastos - custos_op
 
         chart = self._generate_chart(sales_df, exp_df, chart_path)
 
@@ -67,6 +67,7 @@ class ReportGenerator:
         summary_data = [
             ["Receita total", f"R$ {receita:,.2f}"],
             ["Gastos totais", f"R$ {gastos + custos_op:,.2f}"],
+            ["Lucro bruto", f"R$ {lucro_bruto:,.2f}"],
             ["Lucro líquido", f"R$ {lucro_liquido:,.2f}"],
         ]
         summary_table = Table(summary_data, colWidths=[230, 180])

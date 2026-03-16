@@ -31,7 +31,6 @@ class SalesPage(QWidget):
         self.produto = QLineEdit()
         self.quantidade = QLineEdit("1")
         self.preco_unitario = QLineEdit("0")
-        self.custo_producao = QLineEdit("0")
         self.forma_pagamento = QComboBox()
         self.forma_pagamento.addItems(["Pix", "Dinheiro", "Cartão", "Boleto"])
         self.observacoes = QTextEdit()
@@ -45,11 +44,10 @@ class SalesPage(QWidget):
         form.addRow("Produto", self.produto)
         form.addRow("Quantidade", self.quantidade)
         form.addRow("Preço unitário", self.preco_unitario)
-        form.addRow("Custo de produção", self.custo_producao)
         form.addRow("Forma de pagamento", self.forma_pagamento)
         form.addRow("Observações", self.observacoes)
         form.addRow("Valor total", self.valor_total)
-        form.addRow("Lucro", self.lucro)
+        form.addRow("Lucro bruto da venda", self.lucro)
 
         buttons = QHBoxLayout()
         self.calc_button = QPushButton("Calcular")
@@ -68,7 +66,6 @@ class SalesPage(QWidget):
             "produto": self.produto.text().strip(),
             "quantidade": int(self.quantidade.text() or 0),
             "preco_unitario": float(self.preco_unitario.text() or 0),
-            "custo_producao": float(self.custo_producao.text() or 0),
             "forma_pagamento": self.forma_pagamento.currentText(),
             "observacoes": self.observacoes.toPlainText().strip(),
         }
@@ -84,6 +81,5 @@ class SalesPage(QWidget):
         self.produto.clear()
         self.quantidade.setText("1")
         self.preco_unitario.setText("0")
-        self.custo_producao.setText("0")
         self.observacoes.clear()
         self.set_calculated(0, 0)

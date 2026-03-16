@@ -32,9 +32,9 @@ class DashboardPage(QWidget):
         cards_layout = QGridLayout()
         self.card_receita = StatCard("Receita total", "R$ 0,00", "#1f9d55")
         self.card_gastos = StatCard("Gastos totais", "R$ 0,00", "#d64545")
-        self.card_lucro = StatCard("Lucro total", "R$ 0,00", "#1f9d55")
+        self.card_lucro = StatCard("Lucro bruto total", "R$ 0,00", "#1f9d55")
         self.card_lucro_liquido = StatCard("Lucro líquido", "R$ 0,00", "#f1c40f")
-        self.card_margem = StatCard("Margem média", "0.00%", "#2b6cb0")
+        self.card_margem = StatCard("Margem líquida", "0.00%", "#2b6cb0")
 
         cards = [
             self.card_receita,
@@ -48,10 +48,15 @@ class DashboardPage(QWidget):
 
         self.layout.addLayout(cards_layout)
 
+        self.status_label = QLabel("Status financeiro: EM EQUILÍBRIO")
+        self.status_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #f1c40f;")
+        self.status_label.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.status_label)
+
         charts_layout = QHBoxLayout()
         self.sales_chart = self._build_chart("Vendas por período")
         self.expenses_chart = self._build_chart("Gastos por categoria")
-        self.profit_chart = self._build_chart("Lucro mensal")
+        self.profit_chart = self._build_chart("Lucro bruto mensal")
         charts_layout.addWidget(self.sales_chart["canvas"])
         charts_layout.addWidget(self.expenses_chart["canvas"])
         charts_layout.addWidget(self.profit_chart["canvas"])
@@ -68,7 +73,7 @@ class DashboardPage(QWidget):
         return {"figure": figure, "canvas": canvas, "axis": axis}
 
     def refresh(self, indicators: dict, monthly_sales: list[dict], expenses_by_category: list[dict]) -> None:
-        lucro_color = "#1f9d55" if indicators["lucro_total"] >= 0 else "#d64545"
+        lucro_color = "#1f9d55" if indicators["lucro_bruto"] >= 0 else "#d64545"
         liquido = indicators["lucro_liquido"]
         if liquido > 0:
             liquido_color = "#1f9d55"
@@ -79,9 +84,19 @@ class DashboardPage(QWidget):
 
         self.card_receita.update_value(f"R$ {indicators['receita_total']:.2f}", "#1f9d55")
         self.card_gastos.update_value(f"R$ {indicators['gastos_totais'] + indicators['custos_operacionais']:.2f}", "#d64545")
-        self.card_lucro.update_value(f"R$ {indicators['lucro_total']:.2f}", lucro_color)
+        self.card_lucro.update_value(f"R$ {indicators['lucro_bruto']:.2f}", lucro_color)
         self.card_lucro_liquido.update_value(f"R$ {indicators['lucro_liquido']:.2f}", liquido_color)
         self.card_margem.update_value(f"{indicators['margem_media']:.2f}%", "#2b6cb0")
+
+        if liquido > 0:
+            self.status_label.setText("Status financeiro: POSITIVO ✅")
+            self.status_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #1f9d55;")
+        elif liquido < 0:
+            self.status_label.setText("Status financeiro: NEGATIVO ⚠️")
+            self.status_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #d64545;")
+        else:
+            self.status_label.setText("Status financeiro: EM EQUILÍBRIO")
+            self.status_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #f1c40f;")
 
         self._draw_sales_chart(monthly_sales)
         self._draw_expense_chart(expenses_by_category)
@@ -112,7 +127,7 @@ class DashboardPage(QWidget):
     def _draw_profit_chart(self, monthly_sales: list[dict]) -> None:
         ax = self.profit_chart["axis"]
         ax.clear()
-        ax.set_title("Lucro mensal")
+        ax.set_title("Lucro bruto mensal")
         labels = [row["mes"] for row in monthly_sales]
         values = [row["lucro"] for row in monthly_sales]
         if values:

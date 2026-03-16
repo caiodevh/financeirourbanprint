@@ -71,11 +71,11 @@ class FinanceApp(QMainWindow):
         try:
             payload = self.sales_page.get_payload()
             value, profit = self.calculator.calculate_sale_values(
-                payload["quantidade"], payload["preco_unitario"], payload["custo_producao"]
+                payload["quantidade"], payload["preco_unitario"]
             )
             self.sales_page.set_calculated(value, profit)
         except ValueError:
-            self._show_error("Erro", "Preencha quantidade, preço e custo com valores numéricos.")
+            self._show_error("Erro", "Preencha quantidade e preço com valores numéricos.")
 
     def save_sale(self) -> None:
         try:
@@ -84,8 +84,9 @@ class FinanceApp(QMainWindow):
                 self._show_error("Validação", "Cliente e produto são obrigatórios.")
                 return
             payload["valor_total"], payload["lucro"] = self.calculator.calculate_sale_values(
-                payload["quantidade"], payload["preco_unitario"], payload["custo_producao"]
+                payload["quantidade"], payload["preco_unitario"]
             )
+            payload["custo_producao"] = 0.0
             self.db.add_sale(payload)
             self.sales_page.clear_form()
             self.refresh_all()

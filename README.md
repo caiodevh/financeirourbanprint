@@ -4,7 +4,7 @@ Aplicativo desktop em Python para gestão financeira de uma pequena loja de cami
 
 ## Funcionalidades
 - Dashboard com receita, gastos, lucro, lucro líquido e margem.
-- Registro de vendas com cálculo automático de valor total e lucro.
+- Registro de vendas com cálculo automático de valor total e lucro bruto (custos lançados em Gastos/Custos Operacionais).
 - Registro de gastos e custos operacionais.
 - Histórico financeiro com filtros por período, tipo e busca por cliente.
 - Exportação para CSV.
